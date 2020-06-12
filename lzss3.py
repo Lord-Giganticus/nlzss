@@ -114,25 +114,26 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
 
-    if len(args) < 1 or args[0] == '-':
-        if hasattr(stdin, 'buffer'):
-            f = stdin.buffer
-        else:
-            f = stdin
-    else:
+    try:
+        f = open(args[0], "rb")
+    except IOError as e:
+        print(e, file=stderr)
+        return 2
+
+    if len(args) > 1:
         try:
-            f = open(args[0], "rb")
+            out = open(args[1], "wb")
         except IOError as e:
             print(e, file=stderr)
-            return 2
-
-    stdout = sys.stdout
-    if hasattr(stdout, 'buffer'):
-        # grab the underlying binary stream
-        stdout = stdout.buffer
+            return 3
+    else:
+        out = sys.stdout
+        if hasattr(stdout, 'buffer'):
+            # grab the underlying binary stream
+            stdout = stdout.buffer
 
     try:
-        stdout.write(decompress_file(f))
+        out.write(decompress_file(f))
     except IOError as e:
         if e.errno == EPIPE:
             # don't complain about a broken pipe
