@@ -128,9 +128,6 @@ def main(args=None):
             return 3
     else:
         out = sys.stdout
-        if hasattr(stdout, 'buffer'):
-            # grab the underlying binary stream
-            stdout = stdout.buffer
 
     try:
         out.write(decompress_file(f))

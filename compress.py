@@ -1,6 +1,9 @@
 # used http://code.google.com/p/u-lzss/source/browse/trunk/js/lib/ulzss.js as
 # a guide
-from sys import stderr
+
+import os
+import sys
+from sys import stdin, stdout, stderr, exit
 
 from collections import defaultdict
 from operator import itemgetter
@@ -106,20 +109,11 @@ class NLZ10Window(SlidingWindow):
     match_min = 3
     match_max = 3 + 0xf
 
-class NLZ11Window(SlidingWindow):
-    size = 4096
-
-    match_min = 3
-    match_max = 0x111 + 0xFFFF
-
-class NOverlayWindow(NLZ10Window):
-    disp_min = 3
-
-def _compress(input, windowclass=NLZ10Window):
+def _compress(input):
     """Generates a stream of tokens. Either a byte (int) or a tuple of (count,
     displacement)."""
 
-    window = windowclass(input)
+    window = NLZ10Window(input)
 
     i = 0
     while True:
@@ -185,71 +179,42 @@ def compress(input, out):
     # padding
     padding = 4 - (length % 4 or 4)
     if padding:
-        out.write(b'\xff' * padding)
+        out.write(b'\x00' * padding)
 
-def compress_nlz11(input, out):
-    # header
-    out.write(pack("<L", (len(input) << 8) + 0x11))
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
 
-    # body
-    length = 0
-    for tokens in chunkit(_compress(input, windowclass=NLZ11Window), 8):
-        flags = [type(t) == tuple for t in tokens]
-        out.write(pack(">B", packflags(flags)))
-        length += 1
+    try:
+        f = open(args[0], "rb")
+    except IOError as e:
+        print(e, file=stderr)
+        return 2
 
-        for t in tokens:
-            if type(t) == tuple:
-                count, disp = t
-                disp = (-disp) - 1
-                #if disp == 282:
-                #    raise Exception
-                assert 0 <= disp <= 0xFFF
-                if count <= 1 + 0xF:
-                    count -= 1
-                    assert 2 <= count <= 0xF
-                    sh = (count << 12) | disp
-                    out.write(pack(">H", sh))
-                    length += 2
-                elif count <= 0x11 + 0xFF:
-                    count -= 0x11
-                    assert 0 <= count <= 0xFF
-                    b = count >> 4
-                    sh = ((count & 0xF) << 12) | disp
-                    out.write(pack(">BH", b, sh))
-                    length += 3
-                elif count <= 0x111 + 0xFFFF:
-                    count -= 0x111
-                    assert 0 <= count <= 0xFFFF
-                    l = (1 << 28) | (count << 12) | disp
-                    out.write(pack(">L", l))
-                    length += 4
-                else:
-                    raise ValueError(count)
-            else:
-                out.write(pack(">B", t))
-                length += 1
+    if len(args) > 1:
+        try:
+            out = open(args[1], "wb")
+        except IOError as e:
+            print(e, file=stderr)
+            return 3
+    else:
+        raise Exception()
 
-    # padding
-    padding = 4 - (length % 4 or 4)
-    if padding:
-        out.write(b'\xff' * padding)
+    compress(f.read(), out)
+    out.close()
+    
+    filesize = os.path.getsize(args[1]) + 8
+    stream = open(args[1], "rb")
+    file_contents = stream.read()
+    stream.close()
+    
+    out = open(args[1], "wb")
+    out.write(bytes([76, 8, 0, 0, 69]))
+    out.write(filesize.to_bytes(2, byteorder='little'))
+    out.write(b'\x00')
+    out.write(file_contents)
 
-def dump_compress_nlz11(input, out):
-    # body
-    length = 0
-    def dump():
-        for t in _compress(input, windowclass=NLZ11Window):
-            if type(t) == tuple:
-                yield t
-    from pprint import pprint
-    pprint(list(dump()))
+    return 0
 
 if __name__ == '__main__':
-    from sys import stdout, argv
-    data = open(argv[1], "rb").read()
-    stdout = stdout.detach()
-    #compress(data, stdout)
-    compress_nlz11(data, stdout)
-
-    #dump_compress_nlz11(data, stdout)
+    exit(main())
