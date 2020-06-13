@@ -131,6 +131,7 @@ def main(args=None):
 
     try:
         out.write(decompress_file(f))
+        out.close()
     except IOError as e:
         if e.errno == EPIPE:
             # don't complain about a broken pipe
