@@ -3,5 +3,5 @@ Nintendo LZ compression
 =======================
 
 USAGE:
-`python3 ./lzss3.py <file> <outfile>`
-`python3 ./compress.py <file> <outfile>`
+`python3 nlzss\nlzss\lzss3.py <file> <outfile>`
+`python3 nlzss\nlzss\compress.py <file> <outfile>`

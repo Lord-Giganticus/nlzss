@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31019.35
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "nlzss", "nlzss\nlzss.pyproj", "{18FBE938-A78D-4EEA-BA78-FDF75BBEB1DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18FBE938-A78D-4EEA-BA78-FDF75BBEB1DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18FBE938-A78D-4EEA-BA78-FDF75BBEB1DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F651A64-2EAE-414F-AAEF-8E30067ED91F}
+	EndGlobalSection
+EndGlobal
