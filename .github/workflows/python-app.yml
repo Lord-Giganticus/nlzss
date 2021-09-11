@@ -25,10 +25,10 @@ jobs:
       run: |
         python lzss3_setup.py build
         mkdir lzss3
-        mv -v exe.linux-x86_64-3.9/* lzss3/
+        mv exe.linux-x86_64-3.9 lzss3
         python compress_setup.py build
         mkdir compress
-        mv -v exe.linux-x86_64-3.9/* compress/
+        mv exe.linux-x86_64-3.9 compress
     - if: runner.os == 'Windows'
       shell: cmd
       run : |
