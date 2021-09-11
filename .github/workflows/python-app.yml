@@ -27,7 +27,9 @@ jobs:
         cd build
         mkdir lzss3
         cp -r exe.linux-x86_64-3.9/. lzss3
+        cd ../
         python compress_setup.py build
+        cd build
         mkdir compress
         cp -r exe.linux-x86_64-3.9/. compress
         rm -r exe.linux-x86_64-3.9
@@ -37,7 +39,9 @@ jobs:
         python lzss3_setup.py build
         mkdir lzss3
         cp -r exe.win-amd64-3.9/. lzss3
+        cd ../
         python compress_setup.py build
+        cd build
         mkdir compress
         cp -r exe.win-amd64-3.9/. compress
         rm -r exe.win-amd64-3.9
