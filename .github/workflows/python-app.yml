@@ -34,10 +34,10 @@ jobs:
       run : |
         python lzss3_setup.py build
         mkdir lzss3
-        mv -v exe.win-amd64-3.9/* lzss3/
+        mv exe.win-amd64-3.9 lzss3
         python compress_setup.py build
         mkdir compress
-        mv -v exe.win-amd64-3.9/* compress/
+        mv exe.win-amd64-3.9 compress
     - uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ runner.os }}-build-lzss3
