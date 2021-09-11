@@ -21,34 +21,30 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - run: |
+        python lzss3_setup.py build
     - if: runner.os == 'Linux'
-      run: |
-        python lzss3_setup.py build
-        cd build
-        mkdir lzss3
-        cp -r exe.linux-x86_64-3.9/. lzss3
-        cd ../
-        python compress_setup.py build
-        cd build
-        mkdir compress
-        cp -r exe.linux-x86_64-3.9/. compress
-        rm -r exe.linux-x86_64-3.9
-    - if: runner.os == 'Windows'
-      shell: cmd
-      run : |
-        python lzss3_setup.py build
-        mkdir lzss3
-        cp -r exe.win-amd64-3.9/. lzss3
-        cd ../
-        python compress_setup.py build
-        cd build
-        mkdir compress
-        cp -r exe.win-amd64-3.9/. compress
-        rm -r exe.win-amd64-3.9
-    - uses: actions/upload-artifact@v2.2.4
+      uses: actions/upload-artifact@v2.2.4
       with:
-        name: ${{ runner.os }}-build-lzss3
-        path: ${{ github.workspace }}/build
+        name: ${{ runner.os }}-lzss
+        path: ${{ github.workspace }}/build/exe.linux-x86_64-3.9
+    - if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: ${{ runner.os }}-lzss
+        path: ${{ github.workspace }}/build/exe.win-amd64-3.9
+    - run: |
+        python compress_setup.py build
+    - if: runner.os == 'Linux'
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: ${{ runner.os }}-compress
+        path: ${{ github.workspace }}/build/exe.linux-x86_64-3.9
+    - if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: ${{ runner.os }}-compress
+        path: ${{ github.workspace }}/build/exe.win-amd64-3.9
         
   Publish:
     needs: Build
@@ -57,15 +53,34 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir publish
+      - run: |
+          mkdir publish
+          cd publish
+          mkdir linux
+          cd linux
+          mkdir compress
+          mkdir lzss
+          cd ../
+          mkdir windows
+          cd windows
+          mkdir compress
+          mkdir lzss
       - uses: actions/download-artifact@v2.0.10
         with:
-          name: Linux-build
-          path: ${{ github.workspace }}/publish
+          name: Linux-compress
+          path: ${{ github.workspace }}/publish/linux/compress
       - uses: actions/download-artifact@v2.0.10
         with:
-          name: Windows-build
-          path: ${{ github.workspace }}/publish
+          name: Windows-compress
+          path: ${{ github.workspace }}/publish/windows/compress
+      - uses: actions/download-artifact@v2.0.10
+        with:
+          name: Linux-lzss
+          path: ${{ github.workspace }}/publish/linux/lzss
+      - uses: actions/download-artifact@v2.0.10
+        with:
+          name: Windows-lzss
+          path: ${{ github.workspace }}/publish/windows/lzss
       - shell: cmd
         run: |
           pushd ${{ github.workspace }}
