@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -44,10 +44,6 @@ jobs:
       - uses: actions/download-artifact@v2.0.10
         with:
           name: Windows-build
-          path: ${{ github.workspace }}/publish
-      - uses: actions/download-artifact@v2.0.10
-        with:
-          name: macOS-build
           path: ${{ github.workspace }}/publish
       - shell: cmd
         run: |
