@@ -27,7 +27,7 @@ jobs:
       uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ runner.os }}-lzss
-        path: ${{ github.workspace }}/build/exe.linux-x86_64-3.9
+        path: ${{ github.workspace }}/build
     - if: runner.os == 'Windows'
       uses: actions/upload-artifact@v2.2.4
       with:
@@ -39,7 +39,7 @@ jobs:
       uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ runner.os }}-compress
-        path: ${{ github.workspace }}/build/exe.linux-x86_64-3.9
+        path: ${{ github.workspace }}/build
     - if: runner.os == 'Windows'
       uses: actions/upload-artifact@v2.2.4
       with:
