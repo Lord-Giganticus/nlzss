@@ -83,10 +83,18 @@ jobs:
           path: ${{ github.workspace }}/publish/windows/lzss
       - shell: cmd
         run: |
-          pushd ${{ github.workspace }}
+          cd ${{ github.workspace }}
           cd publish
-          7z a "${{ github.workspace }}/nlzss.zip" *.* -r
+          pushd %CD%
+          cd linux
+          cd lzss
+          cp -r exe.linux-x86_64-3.9/. %CD%
+          rm -r exe.linux-x86_64-3.9
+          cd ../compress
+          cp -r exe.linux-x86_64-3.9/. %CD%
+          rm -r exe.linux-x86_64-3.9
           popd
+          7z a "${{ github.workspace }}/nlzss.zip" *.* -r
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
