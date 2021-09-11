@@ -1,0 +1,2 @@
+cx-Freeze==6.8
+idna==3.2
