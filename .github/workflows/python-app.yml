@@ -85,17 +85,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           cd publish
-          pushd %CD%
-          cd linux
-          cd lzss
-          mv exe.linux-x86_64-3.9/lzss3 %CD%/.
-          cp -r exe.linux-x86_64-3.9/. %CD%
-          rm -r exe.linux-x86_64-3.9
-          cd ../compress
-          mv exe.linux-x86_64-3.9/compress %CD%/.
-          cp -r exe.linux-x86_64-3.9/. %CD%
-          rm -r exe.linux-x86_64-3.9
-          popd
           7z a "${{ github.workspace }}/nlzss.zip" *.* -r
       - uses: marvinpinto/action-automatic-releases@latest
         with:
